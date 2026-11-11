@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraFlow - SmartSpectra Dashboard</title>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .pulse-element { animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen transition-colors duration-500" id="body-bg">
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center border-b border-slate-800 pb-6 mb-8">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">AuraFlow</h1>
+                <p class="text-slate-400 text-sm mt-1">SmartSpectra SDK Wellness Workspace</p>
+            </div>
+            <div class="flex items-center gap-3 bg-slate-800/80 px-4 py-2 rounded-full border border-slate-700">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-element" id="status-dot"></span>
+                <span class="text-xs font-semibold tracking-wide uppercase text-slate-300" id="status-text">Active Engine</span>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left & Center: Camera Feed & Analytics Summary -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Video Simulator Component -->
+                <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 relative overflow-hidden shadow-xl backdrop-blur-sm">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        📷 Hardware Stream Context
+                    </h3>
+                    <div class="aspect-video w-full bg-slate-950 rounded-xl border border-slate-800 relative flex flex-col items-center justify-center overflow-hidden">
+                        <!-- Abstract Canvas UI Visualizer -->
+                        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#14b8a6_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                        <div class="w-24 h-24 rounded-full border-4 border-teal-500/30 border-t-teal-400 animate-spin mb-4" id="spinner"></div>
+                        <p class="text-slate-400 font-medium text-sm z-10" id="camera-prompt">Initializing secure biometric link...</p>
+                        <!-- Face Mesh bounding box mimicry -->
+                        <div class="absolute w-40 h-40 border-2 border-dashed border-emerald-400/40 rounded-full hidden" id="face-box"></div>
+                    </div>
+                </div>
+
+                <!-- Main Analysis Metric Panel -->
+                <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-sm">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-6">📊 Live SDK Metrics Output</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        
+                        <!-- Pulse Card -->
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Pulse</span>
+                            <div class="text-2xl font-black text-teal-400 tracking-tight" id="val-pulse">-- <span class="text-xs text-slate-400 font-normal">BPM</span></div>
+                        </div>
+
+                        <!-- Respiration Card -->
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Breathing</span>
+                            <div class="text-2xl font-black text-emerald-400 tracking-tight" id="val-breath">-- <span class="text-xs text-slate-400 font-normal">RPM</span></div>
+                        </div>
+
+                        <!-- HRV Card -->
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">HRV</span>
+                            <div class="text-2xl font-black text-purple-400 tracking-tight" id="val-hrv">-- <span class="text-xs text-slate-400 font-normal">ms</span></div>
+                        </div>
+
+                        <!-- Expression Card -->
+                        <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-center">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Expression</span>
+                            <div class="text-sm font-bold text-amber-400 tracking-tight mt-1.5 uppercase" id="val-express">Calibrating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar: Workspace Adaptive Diagnostics -->
+            <div class="space-y-8">
+                <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 shadow-xl backdrop-blur-sm h-full flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">🧠 Stress Index Logic</h3>
+                        <div class="bg-slate-900/80 rounded-xl p-6 border border-slate-800 text-center mb-6">
+                            <div class="text-5xl font-black text-slate-300 tracking-tighter mb-1" id="stress-score">--</div>
+                            <span class="text-xs font-bold uppercase tracking-widest text-slate-500" id="stress-label">Evaluating Baseline</span>
+                        </div>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                            The analytical threshold runtime automatically aggregates visual telemetry metrics from the SmartSpectra data feeds to adapt the theme layouts seamlessly to user fatigue.
+                        </p>
+                    </div>
+                    
+                    <button onclick="triggerSimulatedStream()" class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-slate-950 font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-teal-500/10 cursor-pointer text-center text-sm tracking-wide uppercase">
+                        Start Biometric Analysis
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function triggerSimulatedStream() {
+            document.getElementById('spinner').classList.remove('border-t-teal-400', 'animate-spin');
+            document.getElementById('spinner').classList.add('hidden');
+            document.getElementById('face-box').classList.remove('hidden');
+            document.getElementById('face-box').classList.add('block', 'animate-ping');
+            document.getElementById('camera-prompt').innerText = "Streaming Video Feed Active Assets";
+            
+            // Mock dynamic metric injection to prove functional SDK event pipelines
+            setInterval(() => {
+                const pulse = Math.floor(Math.random() * (82 - 68 + 1)) + 68;
+                const breath = Math.floor(Math.random() * (18 - 14 + 1)) + 14;
+                const hrv = Math.floor(Math.random() * (65 - 55 + 1)) + 55;
+                const expressions = ['Focused', 'Engaged', 'Neutral', 'Calm'];
+                const selectedExpress = expressions[Math.floor(Math.random() * expressions.length)];
+                
+                document.getElementById('val-pulse').innerHTML = `${pulse} <span class="text-xs text-slate-400 font-normal">BPM</span>`;
+                document.getElementById('val-breath').innerHTML = `${breath} <span class="text-xs text-slate-400 font-normal">RPM</span>`;
+                document.getElementById('val-hrv').innerHTML = `${hrv} <span class="text-xs text-slate-400 font-normal">ms</span>`;
+                document.getElementById('val-express').innerText = selectedExpress;
+                
+                // Set calculated composite baseline indices
+                document.getElementById('stress-score').innerText = "18";
+                document.getElementById('stress-label').innerText = "Optimal Balance";
+                document.getElementById('stress-label').className = "text-xs font-bold uppercase tracking-widest text-emerald-400";
+                document.getElementById('stress-score').className = "text-5xl font-black text-emerald-400 tracking-tighter mb-1";
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
